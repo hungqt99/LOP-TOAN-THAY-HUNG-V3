@@ -1,0 +1,119 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@layer base {
+  html, body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    touch-action: pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Thanh cuộn gọn gàng, hiện đại */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Tùy chỉnh KaTeX display & inline để hiển thị công thức và dấu vector chuẩn xác */
+.katex-display {
+  margin: 0.5em 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+.katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+}
+
+/* Đảm bảo dấu mũi tên véc-tơ (\vec, \overrightarrow) luôn nằm chuẩn phía trên chữ cái */
+.katex .accent > .vlist-t {
+  text-align: center;
+}
+
+.katex .accent .accent-body {
+  position: relative;
+}
+
+.math-content {
+  display: inline-block;
+  line-height: 1.6;
+}
+
+.math-content.inline {
+  display: inline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+
+/* ========================================================================
+   HÌNH/BẢNG MACRO LATEX GỐC
+   Các asset này được render sẵn từ nguồn LaTeX để giữ đúng hình thức đề.
+   ======================================================================== */
+.latex-macro-asset {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin: 0.75rem 0;
+  line-height: 0;
+}
+
+.latex-macro-asset img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.latex-bbt img {
+  max-width: min(760px, 96vw);
+}
+
+.latex-bbt-small img {
+  max-width: min(620px, 92vw);
+}
+
+.latex-graph img {
+  max-width: min(620px, 94vw);
+}
+
+.latex-graph-narrow img {
+  max-width: min(500px, 90vw);
+}
+
+@media (max-width: 640px) {
+  .latex-macro-asset {
+    margin: 0.5rem 0;
+    overflow-x: auto;
+  }
+
+  .latex-macro-asset img {
+    max-width: none;
+  }
+}
