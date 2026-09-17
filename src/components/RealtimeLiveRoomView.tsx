@@ -148,7 +148,7 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
     }
   };
 
-  // Polling đồng bộ phòng thi theo thời gian thực (mỗi 1.5s)
+  // Polling đồng bộ phòng thi theo thời gian thực (giãn cách 2s tối ưu)
   useEffect(() => {
     if (!room?.pin) return;
     const interval = setInterval(async () => {
@@ -159,9 +159,9 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
           setRoom(updated);
         }
       } catch {
-        // ignore
+        // ignore network hiccups during polling
       }
-    }, 1500);
+    }, 2000);
     return () => clearInterval(interval);
   }, [room?.pin]);
 
@@ -203,7 +203,6 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
     setIsAnswerSubmitted(true);
     playSound("correct");
 
-    // Tính điểm tạm thời nếu đúng
     let isCorrect = false;
     if (currentQ.type === "single_choice") {
       isCorrect = ans === currentQ.correctAnswer;
@@ -223,7 +222,7 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
     } catch {}
   };
 
-  // ================= MÀN HÌNH CHỌN VAI TRÒ (CHƯA VÀO PHÒNG) BENTO =================
+  // ================= MÀN HÌNH CHỌN VAI TRÒ BENTO =================
   if (!role || !room) {
     return (
       <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 text-slate-900 font-sans">
@@ -247,7 +246,7 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Cột Giáo viên Bento Card */}
+            {/* Giáo Viên Card */}
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 flex flex-col justify-between space-y-4">
               <div>
                 <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-lg mb-3 shadow-xs">
@@ -277,7 +276,7 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
               </div>
             </div>
 
-            {/* Cột Học sinh Bento Card */}
+            {/* Học Sinh Card */}
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 flex flex-col justify-between space-y-4">
               <div>
                 <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-lg mb-3 shadow-xs">
@@ -331,11 +330,10 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
 
   const currentQ = exam.questions[room.currentQuestionIndex];
 
-  // ================= GIAO DIỆN GIÁO VIÊN ĐIỀU KHIỂN =================
+  // ================= GIAO DIỆN GIÁO VIÊN =================
   if (role === "teacher") {
     return (
       <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex flex-col">
-        {/* Header Phòng thi GV */}
         <div className="max-w-7xl w-full mx-auto bg-slate-900 rounded-3xl p-5 border border-slate-800 flex flex-wrap items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-4">
             <div className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl text-center shadow-lg">
@@ -396,9 +394,7 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
           </div>
         </div>
 
-        {/* Nội dung câu hỏi hiện tại + Bảng xếp hạng Realtime */}
         <div className="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Cột trái: Slide câu hỏi đang chiếu */}
           <div className="lg:col-span-2 bg-slate-900 rounded-3xl p-6 border border-slate-800 flex flex-col justify-between">
             {currentQ ? (
               <div className="space-y-4">
@@ -440,7 +436,6 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
             </div>
           </div>
 
-          {/* Cột phải: Danh sách học sinh & Leaderboard */}
           <div className="bg-slate-900 rounded-3xl p-5 border border-slate-800 flex flex-col">
             <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
               <Trophy className="w-5 h-5 text-amber-400" />
@@ -483,11 +478,10 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
     );
   }
 
-  // ================= GIAO DIỆN HỌC SINH THAM GIA PHÒNG =================
+  // ================= GIAO DIỆN HỌC SINH =================
   return (
     <div className="min-h-screen bg-slate-900 text-white p-4 flex flex-col items-center justify-center">
       <div className="w-full max-w-2xl bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl space-y-6">
-        {/* Header học sinh */}
         <div className="flex justify-between items-center pb-4 border-b border-slate-700">
           <div>
             <span className="px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs">
@@ -505,7 +499,6 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
           </button>
         </div>
 
-        {/* Trạng thái chờ GV bắt đầu */}
         {room.status === "waiting" ? (
           <div className="py-16 text-center space-y-3">
             <div className="w-14 h-14 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mx-auto animate-pulse">
@@ -515,7 +508,6 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
             <p className="text-xs text-slate-400">Bạn đã kết nối thành công vào phòng thi số #{room.pin}.</p>
           </div>
         ) : (
-          /* Trạng thái làm bài theo điều phối của GV */
           currentQ && (
             <div className="space-y-4">
               <div className="flex justify-between items-center text-xs font-bold text-slate-400">
@@ -527,7 +519,6 @@ export const RealtimeLiveRoomView: React.FC<RealtimeLiveRoomViewProps> = ({
                 <MathRenderer content={cleanQuestionContent(currentQ.content)} />
               </div>
 
-              {/* Lựa chọn đáp án */}
               {currentQ.type === "single_choice" && currentQ.options && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {currentQ.options.map((opt) => {

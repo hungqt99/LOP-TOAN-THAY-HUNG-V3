@@ -4,6 +4,7 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  addDoc, //
   updateDoc,
   deleteDoc,
   onSnapshot,
@@ -802,3 +803,19 @@ export const wipeAndResetAllData = async (): Promise<void> => {
     console.error("Lỗi xóa sạch dữ liệu:", err);
   }
 };
+/**
+ * Lưu kết quả bài làm của học sinh trực tiếp lên Firestore collection 'submissions'
+ */
+export async function saveStudentSubmission(submissionData: any) {
+  try {
+    const docRef = await addDoc(collection(db, "submissions"), {
+      ...submissionData,
+      submittedAt: serverTimestamp(),
+    });
+    console.log("Đã lưu bài thi thành công với ID:", docRef.id);
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("Lỗi khi lưu bài thi lên Firestore:", error);
+    throw error;
+  }
+}
