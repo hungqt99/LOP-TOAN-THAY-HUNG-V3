@@ -10,19 +10,18 @@ export const LATEX_MACRO_ASSETS: Record<string, { src: string; className?: strin
 
   // 7 Đồ thị
   "\\GraphCauSix": { src: "/assets/latex-macros/GraphCauSix.png", className: "latex-graph" },
-  "\\GraphCauNine": { src: "/assets/latex-macros/GraphCauNine.png", className: "latex-graph latex-graph-narrow" },
+  "\\GraphCauNine": { src: "/assets/latex-macros/GraphCauNine.png", className: "latex-graph" },
   "\\GraphCauTen": { src: "/assets/latex-macros/GraphCauTen.png", className: "latex-graph" },
-  "\\GraphCauEleven": { src: "/assets/latex-macros/GraphCauEleven.png", className: "latex-graph latex-graph-narrow" },
+  "\\GraphCauEleven": { src: "/assets/latex-macros/GraphCauEleven.png", className: "latex-graph" },
   "\\GraphTFOne": { src: "/assets/latex-macros/GraphTFOne.png", className: "latex-graph" },
-  "\\GraphIIITwo": { src: "/assets/latex-macros/GraphIIITwo.png", className: "latex-graph latex-graph-narrow" },
-  "\\GraphIVThree": { src: "/assets/latex-macros/GraphIVThree.jpeg", className: "latex-graph" },
+  "\\GraphIIITwo": { src: "/assets/latex-macros/GraphIIITwo.png", className: "latex-graph" },
 };
 
 export function replaceLatexMacroAssets(text: string): string {
   let result = text;
   for (const [macro, asset] of Object.entries(LATEX_MACRO_ASSETS)) {
-    const token = `%%%LATEX_ASSET_MACRO_${encodeURIComponent(macro).replace(/%/g, "_")}%%%`;
-    const html = `<span class="latex-macro-asset ${asset.className ?? ""}"><img src="${asset.src}" alt="" loading="lazy"/></span>`;
+    const token = `%%LATEX_ASSET_MACRO_${encodeURIComponent(macro)}%%`;
+    const html = `<span class="latex-macro-asset ${asset.className ?? ""}"><img src="${asset.src}" alt="macro" /></span>`;
     result = result.split(macro).join(token);
     result = result.split(token).join(html);
   }
